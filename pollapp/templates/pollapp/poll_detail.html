@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}{{poll.title}}{% endblock title %}
+{% block content %}
+{% load my_tags %}
+<h3>{{poll.title}}</h3>
+<h4>total votes {{poll.total_votes}}</h4>
+<p>{{poll.text}}</p>
+<p>{{poll.created}}</p>
+
+{% for variant in poll.variants.all %}
+<p>{{variant.text}}</p>
+<p>votes = {{variant.votes}}</p>
+<p>{% calculate_persent poll.total_votes variant.votes %}%</p>
+{% if show_buttons %}
+<form action="{% url "addvote" variant.id %}" method="POST">
+    {% csrf_token %}
+    <input type="submit" value="vote">
+</form>
+{% endif %}
+{% endfor %}
+{% endblock content %}
