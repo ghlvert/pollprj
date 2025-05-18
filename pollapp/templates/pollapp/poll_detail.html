@@ -2,20 +2,44 @@
 {% block title %}{{poll.title}}{% endblock title %}
 {% block content %}
 {% load my_tags %}
-<h3>{{poll.title}}</h3>
-<h4>total votes {{poll.total_votes}}</h4>
-<p>{{poll.text}}</p>
-<p>{{poll.created}}</p>
 
-{% for variant in poll.variants.all %}
-<p>{{variant.text}}</p>
-<p>votes = {{variant.votes}}</p>
-<p>{% calculate_persent poll.total_votes variant.votes %}%</p>
-{% if show_buttons %}
-<form action="{% url "addvote" variant.id %}" method="POST">
-    {% csrf_token %}
-    <input type="submit" value="vote">
-</form>
-{% endif %}
-{% endfor %}
+<div class="poll-detail">
+    <div class="poll-header">
+        <h2>{{poll.title}}</h2>
+        <div class="poll-stats">
+            <span class="total-votes"><i class="fas fa-users"></i> Total votes: {{poll.total_votes}}</span>
+            <span class="created-date"><i class="far fa-calendar-alt"></i> {{poll.created|date:"d M Y H:i"}}</span>
+        </div>
+    </div>
+    
+    <div class="poll-description">
+        <p>{{poll.text}}</p>
+    </div>
+    
+    <div class="variants-list">
+        
+        {% for variant in sorted_variants %}
+        <div class="variant-item">
+            <div class="variant-header">
+                <h4>{{variant.text}}</h4>
+                {% if not show_buttons %}
+                <span class="votes-count">{{variant.votes}} votes</span>
+                {% endif %}
+            </div>
+            {% if not show_buttons %}
+            <div class="progress-bar">
+                <div class="progress" style="width: {% calculate_persent poll.total_votes variant.votes %}%"></div>
+                <span class="percentage">{% calculate_persent poll.total_votes variant.votes %}%</span>
+            </div>
+            {% endif %}
+            {% if show_buttons %}
+            <form action="{% url 'addvote' variant.id %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="vote-btn"><i class="fas fa-vote-yea"></i> Vote</button>
+            </form>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock content %}

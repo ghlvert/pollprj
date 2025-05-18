@@ -3,8 +3,50 @@
 {% block content %}
 {% load my_tags %}
 
-<h2>All polls</h2>
-{% for poll in polls %}
-<p><a href="{{poll.get_absolute_url}}">{{poll.title}}</a></p>
-{% endfor %}
+<div class="polls-header">
+    <h2>All polls</h2>
+</div>
+<div class="polls-list">
+    {% for poll in polls %}
+    <div class="poll-card">
+        <h3><a href="{{poll.get_absolute_url}}">{{poll.title|truncatechars:53}}</a></h3>
+        <p class="poll-text">{{poll.text|truncatechars:110}}</p>
+        <div class="poll-meta">
+            <span class="created-date"><i class="far fa-calendar-alt"></i> {{poll.created|date:"d M Y"}}</span>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if polls.paginator.num_pages > 1 %}
+<div class="pagination-container">
+    <div class="pagination">
+        {% if polls.has_previous %}
+            <a href="?page=1" class="page-link first-page"><i class="fas fa-angle-double-left"></i> First</a>
+            <a href="?page={{ polls.previous_page_number }}" class="page-link"><i class="fas fa-angle-left"></i> Prev</a>
+        {% else %}
+            <span class="page-link disabled"><i class="fas fa-angle-double-left"></i> First</span>
+            <span class="page-link disabled"><i class="fas fa-angle-left"></i> Prev</span>
+        {% endif %}
+
+        <div class="page-numbers">
+            {% for num in polls.paginator.page_range %}
+                {% if polls.number == num %}
+                    <span class="page-link active">{{ num }}</span>
+                {% elif num > polls.number|add:'-3' and num < polls.number|add:'3' %}
+                    <a href="?page={{ num }}" class="page-link">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        {% if polls.has_next %}
+            <a href="?page={{ polls.next_page_number }}" class="page-link">Next <i class="fas fa-angle-right"></i></a>
+            <a href="?page={{ polls.paginator.num_pages }}" class="page-link last-page">Last <i class="fas fa-angle-double-right"></i></a>
+        {% else %}
+            <span class="page-link disabled">Next <i class="fas fa-angle-right"></i></span>
+            <span class="page-link disabled">Last <i class="fas fa-angle-double-right"></i></span>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
 {% endblock content %}

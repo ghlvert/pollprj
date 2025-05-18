@@ -1,12 +1,35 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% endblock title %}</title>
+    <title>{% block title %}Poll App{% endblock title %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    
-    {% block content %}{% endblock content %}
+    <header>
+        <div class="container">
+            <h1 class="logo"><a href="{% url "home" %}">PollApp</a></h1>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'home' %}"><i class="fas fa-poll"></i> All Polls</a></li>
+                    <li><a href="{% url 'create_poll' %}"><i class="fas fa-plus-circle"></i> Create Poll</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        {% block content %}{% endblock content %}
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 PollApp. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>
